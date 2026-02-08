@@ -10,3 +10,25 @@ services:
     volumes:
       - ./mongodb_data:/data/db
     restart: unless-stopped
+    networks:
+      - nest-app-network
+  mongo-express:
+    image: mongo-express:1.0
+    container_name: mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongodb_user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongodb_password
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb_user:mongodb_password@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    networks:
+      - nest-app-network
+
+networks:
+  nest-app-network:
+    driver: bridge
